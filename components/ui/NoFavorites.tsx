@@ -1,6 +1,11 @@
 import { Container, Image, Text } from "@nextui-org/react"
 
 export const NoFavorites = () => {
+
+    const randomPokemon = ():number => {
+        return Math.floor(Math.random() * 649) + 1;
+    }
+
     return (
         <Container
         css={{
@@ -16,9 +21,9 @@ export const NoFavorites = () => {
         </Text>
         <Image
             alt="no Image"
-            css={{ opacity: '0.1' }}
+            css={{ opacity: '0.3' }}
             height={250}
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/572.svg"
+            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${randomPokemon()}.svg`}
             width={250}
         />
     </Container>

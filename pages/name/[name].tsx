@@ -13,7 +13,7 @@ interface PokemonByNamePageProps {
     pokemon: Pokemon;
 }
 
-const PokemonByNamePage: NextPage<PokemonByNamePageProps> = ({pokemon}) => {
+const PokemonByNamePage: NextPage<PokemonByNamePageProps> = ({ pokemon }) => {
     const [isInFavorites, setIsInFavorites] = useState(
         localFavorites.existsInFavorites(pokemon.id)
     );
@@ -26,10 +26,10 @@ const PokemonByNamePage: NextPage<PokemonByNamePageProps> = ({pokemon}) => {
 
         confetti({
             zIndex: 999,
-            particleCount: 250,  
+            particleCount: 250,
             spread: 160,
             angle: -100,
-            origin: {x: 1, y: 0},
+            origin: { x: 1, y: 0 },
         });
     };
 
@@ -107,29 +107,42 @@ const PokemonByNamePage: NextPage<PokemonByNamePageProps> = ({pokemon}) => {
             </Grid.Container>
         </Layout>
     );
-}
+};
 
 export default PokemonByNamePage;
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
+    const { data } = await pokeApi.get<PokemonListResponse>(
+        `/pokemon?limit=151`
+    );
 
-    const { data } = await pokeApi.get<PokemonListResponse>(`/pokemon?limit=151`);
-    
-    const pokemonNames: string[] = data.results.map(pokemon => pokemon.name);
-
+    const pokemonNames: string[] = data.results.map((pokemon) => pokemon.name);
 
     return {
-        paths: pokemonNames.map(name => ({ params: { name } })),
-        fallback: false, // fallback to 404 page in case pokemon name does not exist
+        paths: pokemonNames.map((name) => ({ params: { name } })),
+        // fallback: false, // fallback to 404 page in case pokemon name does not exist
+        fallback: 'blocking',
     };
-}
+};
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
     const { name } = ctx.params as { name: string };
 
+    const pokemon = await getPokemonInfo(name);
+
+    if(!pokemon) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
+
     return {
         props: {
-            pokemon: await getPokemonInfo( name ),
+            pokemon,
         },
+        revalidate: 604800, // 1 week 60* 60 * 24 * 7
     };
-}
+};

@@ -20,7 +20,7 @@ export const Navbar = () => {
             <NextLink href="/" passHref>
                 <Link>
                     <Image
-                        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+                        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/572.png"
                         alt="app icon"
                         width={70}
                         height={70}
